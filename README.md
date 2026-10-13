@@ -278,7 +278,7 @@ Architect's Desk produces an automated review of a **diagram**, informed by the 
 Architect's Desk is an independent project. It is not affiliated with, endorsed by, or sponsored by Amazon Web Services. AWS, Amazon Web Services, AWS Well-Architected and the names of AWS services are trademarks of Amazon.com, Inc. or its affiliates. Terraform is a trademark of HashiCorp. Other names are trademarks of their respective owners.
 
 ## License
-All rights reserved. No license granted yet.
+Released under the [MIT License](LICENSE).
 
 ## Author
 **Arnar DeMarco** · Norselabs · [norselabs.net](https://norselabs.net)
