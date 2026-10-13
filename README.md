@@ -116,17 +116,12 @@ The offline app is built with Electron and ships as two zips, one per architectu
 
 It needs macOS 13 or later. Check the download with `shasum -a 256 -c SHA256SUMS.txt`.
 
-1. Unzip by double-clicking, or run `ditto -x -k Architects-Desk-1.0.0-mac-arm64.zip .`. Then drag **Architect's Desk.app** to /Applications.
-2. The app is **not notarized**, so macOS blocks it the first time:
-   - **macOS 15 and later:** double-click the app and choose **Done**. Then open **System Settings ▸ Privacy & Security**, click **Open Anyway** next to Architect's Desk, authenticate, and click **Open**.
-   - **macOS 13–14:** right-click (Control-click) the app ▸ **Open** ▸ **Open**.
-3. If macOS says the app **"is damaged and can't be opened"**:
-   ```sh
-   xattr -cr "/Applications/Architect's Desk.app"
-   codesign --force --deep -s - "/Applications/Architect's Desk.app"
-   open "/Applications/Architect's Desk.app"
-   ```
-   The build already ships with an ad-hoc signature, so the `codesign` line is only a fallback.
+The app is signed with a Developer ID certificate (Arnar DeMarco, 345B9QZN32) and notarized by Apple, with the ticket stapled, so it opens normally:
+
+1. Unzip by double-clicking, or run `ditto -x -k Architects-Desk-1.0.0-mac-arm64.zip .`.
+2. Drag **Architect's Desk.app** to /Applications and open it.
+
+To check the signature yourself: `spctl -a -vvv -t exec "/Applications/Architect's Desk.app"` should report `accepted` and `source=Notarized Developer ID`.
 
 ## Using it
 1. **Templates.** Press **T** or click **Templates**. The cards show each template's estimated monthly cost.
@@ -219,9 +214,30 @@ npm start                 # run the app locally from source (Electron)
   - share links that point at https://norselabs.net/architect/
   - the wordmark linking out to norselabs.net
 - After changing `src/`, copy it into `mac/app/web/` again and keep those changes.
-- `build.sh` packages with `@electron/packager` and ad-hoc signs the macOS bundles with `rcodesign`. Set `RCODESIGN=/path/to/rcodesign` to use a different binary. On macOS you can sign with `codesign --force --deep -s -` instead.
+- `build.sh` packages with `@electron/packager` and ad-hoc signs the macOS bundles with `rcodesign`. Set `RCODESIGN=/path/to/rcodesign` to use a different binary.
 - It zips the apps with `zip -ry` (keeps framework symlinks).
-- It runs on Linux. The macOS builds are unsigned and not notarized.
+- It runs on Linux. Without signing variables the macOS builds are ad-hoc signed only (not notarized).
+- **Optional Developer ID signing and notarization** (`mac/sign-notarize.sh`, called by `build.sh` when `MAC_SIGN_KEY` is set). Nothing secret lives in the repo; the variables point at files you keep elsewhere:
+  ```sh
+  # MAC_SIGN_KEY: PEM private key of your "Developer ID Application" certificate; MAC_SIGN_CERT: that certificate (DER)
+  # MAC_NOTARY_API_KEY (optional): App Store Connect API key JSON from `rcodesign encode-app-store-connect-api-key`
+  MAC_SIGN_KEY=~/secrets/devid.key MAC_SIGN_CERT=~/secrets/devid.cer MAC_NOTARY_API_KEY=~/secrets/asc.json \
+  ./build.sh
+  ```
+  It signs with the hardened runtime, a secure timestamp and `mac/build/entitlements.plist` (JIT, unsigned executable memory, disabled library validation, as Electron needs), nested frameworks and helpers included, then submits, waits for and staples the notarization. Signing needs to reach `http://timestamp.apple.com`.
+- **On a Mac with Xcode Command Line Tools** you can do the same with Apple's tools instead. With the identity in your keychain and a notary profile from `xcrun notarytool store-credentials <profile> --key AuthKey_XXXX.p8 --key-id <id> --issuer <issuer>`:
+  ```sh
+  APP="out/Architect's Desk-darwin-arm64/Architect's Desk.app"; ID="Developer ID Application: Your Name (TEAMID)"; ENT=build/entitlements.plist
+  cs() { codesign --force --timestamp --options runtime --entitlements "$ENT" -s "$ID" "$1"; }
+  # inside out: loose Mach-O files, then frameworks, then helper apps, then the app
+  find "$APP/Contents/Frameworks" -type f ! -path "*.app/Contents/MacOS/*" -print0 | while IFS= read -r -d '' f; do file -b "$f" | grep -q Mach-O && cs "$f"; done
+  for f in "$APP"/Contents/Frameworks/*.framework "$APP"/Contents/Frameworks/*.app "$APP"; do cs "$f"; done
+  codesign --verify --deep --strict --verbose=2 "$APP"
+  ditto -c -k --keepParent "$APP" notarize.zip
+  xcrun notarytool submit notarize.zip --keychain-profile <profile> --wait
+  xcrun stapler staple "$APP" && spctl -a -vvv -t exec "$APP"
+  ditto -c -k --keepParent "$APP" Architects-Desk-1.0.0-mac-arm64.zip
+  ```
 
 **Tests** (`tests/`, Playwright, using a local Chrome or Chromium).
 ```sh

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build Architect's Desk for macOS (arm64 + x64, unsigned) and a Linux x64 copy used only for testing.
+# Build Architect's Desk for macOS (arm64 + x64; ad-hoc signed, or Developer ID signed + notarized when MAC_SIGN_KEY is set) and a Linux x64 copy used only for testing.
 set -euo pipefail
 cd "$(dirname "$0")"
 # Prerequisites: Node 20+, `npm ci` in this folder (Electron + @electron/packager), zip, and rcodesign
@@ -17,6 +17,10 @@ npx @electron/packager "${common[@]}" --platform linux --arch x64 --executable-n
 cd out
 # Ad-hoc signature (no Apple identity) so Apple Silicon doesn't reject the modified Electron binaries as "damaged".
 for a in arm64 x64; do "$RC" sign "Architect's Desk-darwin-$a/Architect's Desk.app" >/dev/null 2>../rcodesign-$a.log || { echo "rcodesign failed ($a)"; tail -5 ../rcodesign-$a.log; exit 1; }; done
+# Optional Developer ID signing + notarization (see sign-notarize.sh). Secrets come from files named by env vars, never the repo.
+if [ -n "${MAC_SIGN_KEY:-}" ]; then
+  for a in arm64 x64; do app=$(ls -d "$PWD"/*-darwin-$a/*.app); RCODESIGN="$RC" ../sign-notarize.sh "$app"; done
+fi
 for a in arm64 x64; do
   z="../dist/Architects-Desk-1.0.0-mac-$a.zip"; rm -f "$z"
   (cd "Architect's Desk-darwin-$a" && zip -qry -X "../$z" "Architect's Desk.app")

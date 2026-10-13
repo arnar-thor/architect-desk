@@ -15,3 +15,9 @@ pricing/raw/
 .DS_Store
 __pycache__/
 *.pyc
+# signing material never belongs in the repo
+*.p12
+*.p8
+*.key
+*.cer
+asc.json
