@@ -1,0 +1,14 @@
+{
+  "name": "architect-desk-mac-build",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build tooling for the Architect's Desk macOS app (Electron). The app itself is in app/.",
+  "scripts": {
+    "build": "./build.sh",
+    "start": "electron app"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.7.0"
+  }
+}

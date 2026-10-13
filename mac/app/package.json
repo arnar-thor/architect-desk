@@ -1,0 +1,9 @@
+{
+  "name": "architects-desk",
+  "productName": "Architect's Desk",
+  "version": "1.0.0",
+  "description": "Design AWS architectures with regional costs (GovCloud included) and a Well-Architected review. Offline desktop edition of norselabs.net/architect.",
+  "main": "main.js",
+  "author": "Norselabs",
+  "license": "UNLICENSED"
+}

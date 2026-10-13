@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Architect's Desk · Norselabs</title>
+<meta name="description" content="Design AWS architectures on a canvas, see a live monthly cost estimate from published us-east-1 prices, and get a Well-Architected review with one-click fixes.">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="nl-home.css">
+</head>
+<body data-nl="architect">
+<a class="skip" href="#inspector">Skip to review panel</a>
+<header class="topbar" role="banner">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/><rect x="6.5" y="7" width="5" height="4" rx="1" fill="currentColor"/><rect x="12.5" y="13" width="5" height="4" rx="1" class="brand-accent"/></svg>
+    <div class="brand-txt"><h1>Architect's Desk</h1><span class="brand-sub">AWS design studio</span></div>
+  </div>
+  <div class="doc">
+    <input id="doc-title" class="doc-title" aria-label="Diagram name" value="Untitled architecture" spellcheck="false">
+    <span id="save-state" class="save-state" aria-live="polite">Saved</span>
+  </div>
+  <nav class="tools" aria-label="Diagram tools">
+    <button class="tbtn" id="btn-templates" type="button" title="Templates (T)"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M16.5 13v7M13 16.5h7"/></svg><span>Templates</span></button>
+    <span class="tsep"></span>
+    <button class="tbtn icon" id="btn-undo" type="button" title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 24 24"><path d="M9 7L4 12l5 5"/><path d="M4 12h10a6 6 0 0 1 0 12h-2" transform="translate(0 -6)"/></svg></button>
+    <button class="tbtn icon" id="btn-redo" type="button" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"><svg viewBox="0 0 24 24"><path d="M15 7l5 5-5 5"/><path d="M20 12H10a6 6 0 0 0 0 12h2" transform="translate(0 -6)"/></svg></button>
+    <span class="tsep"></span>
+    <button class="tbtn icon" id="btn-zoom-out" type="button" title="Zoom out (−)" aria-label="Zoom out"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M8 11h6M16 16l4 4"/></svg></button>
+    <button class="tbtn zoomlbl" id="btn-fit" type="button" title="Fit to screen (F)"><span id="zoom-pct">100%</span></button>
+    <button class="tbtn icon" id="btn-zoom-in" type="button" title="Zoom in (+)" aria-label="Zoom in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M8 11h6M11 8v6M16 16l4 4"/></svg></button>
+    <button class="tbtn icon" id="btn-snap" type="button" title="Snap to grid (G)" aria-label="Snap to grid" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h16M8 4v16M16 4v16"/></svg></button>
+    <span class="tsep"></span>
+    <div class="menuwrap">
+      <button class="tbtn" id="btn-export" type="button" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>Export</span></button>
+      <div class="menu" id="menu-export" role="menu" hidden>
+        <button role="menuitem" data-act="png" type="button">PNG image <kbd>Ctrl E</kbd></button>
+        <button role="menuitem" data-act="svg" type="button">SVG diagram</button>
+        <button role="menuitem" data-act="json" type="button">Save JSON <kbd>Ctrl S</kbd></button>
+        <button role="menuitem" data-act="open" type="button">Open JSON… <kbd>Ctrl O</kbd></button>
+        <button role="menuitem" data-act="tf" type="button">Starter Terraform (.tf)</button>
+        <button role="menuitem" data-act="share" type="button">Copy share link</button>
+      </div>
+    </div>
+    <button class="tbtn primary" id="btn-share" type="button" title="Copy a link that contains this diagram"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span>Share</span></button>
+    <button class="tbtn icon" id="btn-help" type="button" title="How it works (?)" aria-label="Help and shortcuts"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="16.8" r=".6" fill="currentColor"/></svg></button>
+    <a class="nl-home nl-bar-word" href="/" aria-label="Norselabs home"><img src="nl-wordmark.webp" alt="" width="758" height="110"></a>
+  </nav>
+</header>
+
+<div class="viewnote" id="viewnote" role="note"><strong>Review mode.</strong> Pinch and drag to explore. Editing works best on a desktop.</div>
+
+<main class="layout">
+  <aside class="palette" id="palette" aria-label="Components">
+    <div class="pal-head">
+      <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="pal-search" type="search" placeholder="Search components" aria-label="Search components"></label>
+    </div>
+    <div class="pal-list" id="pal-list"></div>
+    <p class="pal-tip">Drag onto the canvas, or press <kbd>Enter</kbd> to add.</p>
+  </aside>
+
+  <section class="stage" id="stage" aria-label="Architecture canvas">
+    <svg id="canvas" class="canvas" tabindex="0" role="application" aria-label="Diagram canvas. Use the components list to add services; arrow keys move the selection.">
+      <defs>
+        <pattern id="grid-s" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="grid-minor"/></pattern>
+        <pattern id="grid-l" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="url(#grid-s)"/><path d="M100 0H0V100" class="grid-major"/></pattern>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" class="arrowhead"/></marker>
+        <marker id="arrow-sel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" class="arrowhead sel"/></marker>
+      </defs>
+      <rect id="grid-bg" class="grid-bg" width="100%" height="100%"/>
+      <g id="world">
+        <rect id="grid" class="grid" x="-20000" y="-20000" width="40000" height="40000" fill="url(#grid-l)"/>
+        <g id="l-groups"></g><g id="l-ghosts"></g><g id="l-edges"></g><g id="l-nodes"></g><g id="l-overlay"></g>
+      </g>
+    </svg>
+    <div class="titleblock" id="titleblock" aria-hidden="true"><div class="tb-row"><span>Project</span><b id="tb-title">—</b></div><div class="tb-row"><span>Region</span><b id="tb-region">us-east-1</b></div><div class="tb-row"><span>Est. monthly</span><b id="tb-cost">$0</b></div><div class="tb-row"><span>Sheet</span><b>A-01</b></div></div>
+    <div class="hud" id="hud">
+      <div class="hud-cost"><span class="hud-k">Est. monthly</span><b id="hud-total">$0</b></div>
+      <div class="hud-score"><span class="hud-k">W-A score</span><b id="hud-score">—</b></div>
+      <div class="hud-find"><span class="hud-k">Findings</span><b id="hud-find">0</b></div>
+    </div>
+    <div class="minimap" id="minimap" aria-hidden="true"><svg id="mm-svg"></svg></div>
+    <div class="empty" id="empty" hidden>
+      <h2>Start with a template or drag a service in</h2>
+      <p>Your design autosaves in this browser.</p>
+      <button class="btn primary" type="button" data-open-templates>Browse templates</button>
+    </div>
+  </section>
+
+  <aside class="inspector" id="inspector" aria-label="Review panel">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-overview" aria-controls="pane-overview" aria-selected="true" type="button">Overview</button>
+      <button role="tab" id="tab-cost" aria-controls="pane-cost" aria-selected="false" type="button">Cost</button>
+      <button role="tab" id="tab-review" aria-controls="pane-review" aria-selected="false" type="button">Review <span class="tabcount" id="tabcount"></span></button>
+      <button role="tab" id="tab-props" aria-controls="pane-props" aria-selected="false" type="button">Properties</button>
+    </div>
+    <div class="pane" id="pane-overview" role="tabpanel" aria-labelledby="tab-overview"></div>
+    <div class="pane" id="pane-cost" role="tabpanel" aria-labelledby="tab-cost" hidden></div>
+    <div class="pane" id="pane-review" role="tabpanel" aria-labelledby="tab-review" hidden></div>
+    <div class="pane" id="pane-props" role="tabpanel" aria-labelledby="tab-props" hidden></div>
+  </aside>
+</main>
+
+<div class="modal" id="m-templates" role="dialog" aria-modal="true" aria-labelledby="mt-h" hidden>
+  <div class="sheet wide">
+    <div class="sheet-h"><h2 id="mt-h">Start from a template</h2><button class="x" type="button" data-close aria-label="Close">×</button></div>
+    <p class="sheet-sub">Each template is a realistic starting point. Its cost and review update as soon as you change anything. Loading one replaces the current canvas (you can undo).</p>
+    <div class="tgrid" id="tgrid"></div>
+  </div>
+</div>
+
+<div class="modal" id="m-help" role="dialog" aria-modal="true" aria-labelledby="mh-h" hidden>
+  <div class="sheet">
+    <div class="sheet-h"><h2 id="mh-h">How Architect's Desk works</h2><button class="x" type="button" data-close aria-label="Close">×</button></div>
+    <ol class="steps">
+      <li><b>Lay it out.</b> Drag services from the left onto the canvas. Drop them inside a VPC, AZ or subnet and they pick up that placement automatically.</li>
+      <li><b>Connect.</b> Drag from the small dot on a service's right edge to another service.</li>
+      <li><b>Tune.</b> Select a service to set its size and usage. The monthly estimate updates instantly.</li>
+      <li><b>Review.</b> The Review tab scores the design on the six Well-Architected pillars and offers one-click fixes.</li>
+    </ol>
+    <h3>Shortcuts</h3>
+    <dl class="keys">
+      <dt><kbd>Ctrl</kbd> <kbd>Z</kbd> / <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Z</kbd></dt><dd>Undo / redo</dd>
+      <dt><kbd>Del</kbd></dt><dd>Delete selection</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>D</kbd></dt><dd>Duplicate</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>A</kbd></dt><dd>Select all</dd>
+      <dt><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></dt><dd>Nudge (Shift for bigger steps)</dd>
+      <dt>Drag empty space</dt><dd>Pan (Shift-drag to box-select)</dd>
+      <dt>Scroll / <kbd>+</kbd> <kbd>−</kbd></dt><dd>Zoom; <kbd>F</kbd> fits, <kbd>0</kbd> resets</dd>
+      <dt><kbd>G</kbd></dt><dd>Snap to grid on/off</dd>
+      <dt><kbd>Ctrl</kbd> <kbd>S</kbd> / <kbd>Ctrl</kbd> <kbd>O</kbd></dt><dd>Save / open JSON</dd>
+      <dt><kbd>T</kbd> / <kbd>?</kbd></dt><dd>Templates / this help</dd>
+    </dl>
+    <h3>About the numbers</h3>
+    <p class="fine" id="help-prices"></p>
+    <p class="fine">Icons are original Norselabs drawings inspired by AWS services; AWS and the service names are trademarks of Amazon.com, Inc. or its affiliates. This tool is not affiliated with AWS.</p>
+  </div>
+</div>
+
+<div class="onboard" id="onboard" role="dialog" aria-modal="false" aria-labelledby="ob-h" hidden>
+  <div class="ob-step" id="ob-body"></div>
+</div>
+
+<div class="modal" id="m-compare" role="dialog" aria-modal="true" aria-labelledby="mc-h" hidden>
+  <div class="sheet wide">
+    <div class="sheet-h"><h2 id="mc-h">Compare regions</h2><button class="x" type="button" data-close aria-label="Close">×</button></div>
+    <p class="sheet-sub" id="cmp-sub">This design's estimated monthly cost in every region, cheapest first.</p>
+    <div id="cmp-list"></div>
+    <p class="fine">On-demand list prices from each region's AWS Price List offer files. Click a region to switch the estimate to it.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<input type="file" id="file-open" accept="application/json,.json" hidden>
+
+<script src="js/catalog.js"></script>
+<script src="js/cost.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/terraform.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

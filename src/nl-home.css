@@ -1,0 +1,55 @@
+/* Norselabs back-link: shared bits */
+.nl-home { -webkit-tap-highlight-color: transparent; }
+.nl-home:focus { outline: none; }
+.nl-home:focus-visible { outline: 2px solid #7eb6d9; outline-offset: 3px; }
+.nl-mark { display: block; flex: none; }
+.nl-menu-home { text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { .nl-home, .nl-home * { transition: none !important; } }
+
+/* Incident Room: leave-case confirm inside the pause menu */
+.menu.nl-confirming > :not(.menu-h):not(.nl-leave) { display: none !important; }
+.nl-leave { text-align: center; }
+.nl-leave[hidden] { display: none; }
+.nl-leave p { margin: 6px 0 16px; color: #d6cdbf; font-size: 14.5px; line-height: 1.5; }
+.nl-leave-btns { display: flex; gap: 10px; justify-content: center; }
+.nl-leave-btns .btn { min-width: 116px; justify-content: center; text-decoration: none; }
+
+/* Option A: signature wordmark (bottom-right on the map pages) */
+.nl-sig { position: fixed; z-index: 20; right: 14px; bottom: 16px; display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 8px; text-decoration: none; }
+.nl-sig img { display: block; width: 112px; height: auto; opacity: .74; transition: opacity .25s, filter .25s; }
+.nl-sig-lbl { font: 500 12px/1 "Inter", "Avenir Next", "Segoe UI", sans-serif; letter-spacing: .02em; color: #cfc6b8; white-space: nowrap;
+  padding: 6px 9px; border-radius: 999px; background: rgba(20,18,16,.82); border: 1px solid rgba(239,232,220,.12);
+  opacity: 0; transform: translateX(10px); transition: opacity .25s, transform .3s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
+.nl-sig:hover img, .nl-sig:focus-visible img { opacity: 1; filter: drop-shadow(0 0 10px rgba(126,182,217,.5)); }
+.nl-sig:hover .nl-sig-lbl, .nl-sig:focus-visible .nl-sig-lbl { opacity: 1; transform: none; }
+/* label slides out to the right when the wordmark sits on the left edge */
+.nl-sig.nl-left .nl-sig-lbl { order: 2; transform: translateX(-10px); }
+.nl-sig.nl-left:hover .nl-sig-lbl, .nl-sig.nl-left:focus-visible .nl-sig-lbl { transform: none; }
+@media (hover: none) { .nl-sig-lbl { display: none; } }
+
+/* Living Earth: clear of the timeline on narrower screens */
+[data-nl="earth"] .nl-sig { bottom: 20px; right: 16px; }
+/* label rises above the wordmark here, so it never slides under the timeline */
+[data-nl="earth"] .nl-sig-lbl { position: absolute; right: 6px; bottom: calc(100% + 2px); transform: translateY(6px); }
+[data-nl="earth"] .nl-sig:hover .nl-sig-lbl, [data-nl="earth"] .nl-sig:focus-visible .nl-sig-lbl { transform: none; }
+@media (max-width: 1180px) { [data-nl="earth"] .nl-sig { bottom: 100px; } }
+@media (max-width: 760px) { [data-nl="earth"] .nl-sig { bottom: calc(98px + env(safe-area-inset-bottom)); right: 8px; } [data-nl="earth"] .nl-sig img { width: 92px; } }
+/* Living Roads: under the legend on desktop, beside it on tablets, centred above the bottom sheet on phones */
+[data-nl="traffic"] .nl-sig { bottom: 16px; right: 12px; }
+@media (max-width: 1100px) and (min-width: 761px) { [data-nl="traffic"] .legend { bottom: 58px; } }
+@media (max-width: 760px) { [data-nl="traffic"] .nl-sig { right: auto; left: 50%; transform: translateX(-50%); bottom: calc(122px + env(safe-area-inset-bottom)); }
+  [data-nl="traffic"] .nl-sig img { width: 92px; } }
+/* AI Pulse: wordmark top-left (label slides to the right) */
+[data-nl="pulse"] .nl-sig { position: absolute; top: 16px; left: 18px; right: auto; bottom: auto; }
+[data-nl="pulse"] .nl-sig img { width: 118px; }
+@media (max-width: 640px) { [data-nl="pulse"] .nl-sig { top: 10px; left: 10px; } [data-nl="pulse"] .nl-sig img { width: 92px; } }
+[data-nl="pulse"] .nl-foot-link { display: block; width: max-content; margin: 0 auto; border-radius: 6px; }
+[data-nl="pulse"] .nl-foot-link .brand-logo { opacity: .8; transition: opacity .2s; }
+[data-nl="pulse"] .nl-foot-link:hover .brand-logo { opacity: 1; }
+/* Incident Room: title-screen wordmark, plus a small wordmark in the board bars */
+[data-nl="incident"] .topline .nl-sig { position: static; padding: 4px; margin: -4px; }
+[data-nl="incident"] .topline .nl-sig img { width: auto; height: 22px; }
+.nl-bar-word { display: flex; align-items: center; padding: 6px; border-radius: 6px; opacity: .7; transition: opacity .2s; }
+.nl-bar-word:hover, .nl-bar-word:focus-visible { opacity: 1; }
+.nl-bar-word img { height: 14px; width: auto; display: block; }
+@media (max-width: 560px) { .nl-bar-word img { height: 11px; } }

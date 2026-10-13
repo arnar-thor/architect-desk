@@ -1,0 +1,16 @@
+{
+  "name": "architect-desk-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright end-to-end tests for the Architect's Desk web app and the Electron (Linux) build.",
+  "scripts": {
+    "serve": "python3 -m http.server 8601 --directory ../src",
+    "test:web": "node web.test.js",
+    "test:region": "node region.test.js",
+    "test:electron": "xvfb-run -a -s \"-screen 0 1600x1000x24\" node electron.test.js",
+    "tf:generate": "node terraform-gen.js"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

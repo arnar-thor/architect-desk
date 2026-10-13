@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#123a6b"/><stop offset="1" stop-color="#0a2140"/></linearGradient>
+    <pattern id="g" width="41.2" height="41.2" patternUnits="userSpaceOnUse" x="100" y="100"><path d="M41.2 0H0V41.2" fill="none" stroke="#9fd6ff" stroke-opacity=".10" stroke-width="2"/></pattern>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="125%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity=".35"/></filter>
+  </defs>
+  <g filter="url(#sh)"><rect x="100" y="100" width="824" height="824" rx="185" fill="url(#bg)"/></g>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#g)"/>
+  <rect x="101" y="101" width="822" height="822" rx="184" fill="none" stroke="#5ee1ff" stroke-opacity=".25" stroke-width="3"/>
+  <g transform="translate(512 512) scale(10.4) translate(-32 -32)">
+    <rect x="13" y="13" width="38" height="38" rx="5" fill="none" stroke="#5ee1ff" stroke-width="3" stroke-dasharray="6 4"/>
+    <rect x="20" y="22" width="12" height="10" rx="2" fill="#5ee1ff"/>
+    <rect x="34" y="34" width="12" height="10" rx="2" fill="#ffd166"/>
+    <path d="M32 27h7v7" fill="none" stroke="#e6f6ff" stroke-width="2.5"/>
+  </g>
+</svg>
